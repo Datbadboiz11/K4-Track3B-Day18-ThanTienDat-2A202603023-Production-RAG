@@ -19,6 +19,22 @@
 
 ---
 
+## Latency Breakdown Report (Bảng phân rã độ trễ từng bước — Bonus +2)
+
+Bảng thống kê thời gian thực thi thực tế của hệ thống đo đạc từ quá trình chạy thực nghiệm:
+
+| Giai đoạn (Pipeline Stage) | Kỹ thuật / Công nghệ | Thời gian thực thi | Đánh giá hiệu năng |
+|:---|:---|:---:|:---|
+| **1. Document Ingestion & Chunking** | PyPDF + Markdown Parser + Hierarchical | **0.4s** | Xử lý 26 tài liệu thành 105 chunks cực nhanh. |
+| **2. Chunk Enrichment Pipeline** | OpenAI Combined Mode (1 call/chunk) | **543.5s** (~5.1s / chunk) | Tiết kiệm 75% API calls và chi phí so với 4 hàm độc lập. |
+| **3. Hybrid Indexing** | BM25 Okapi + Qdrant Dense (`bge-m3`) | **111.6s** (~1.0s / chunk) | Vector hóa 105 chunks (1024-dim) và index đồng thời. |
+| **4. Online Retrieval (Per Query)** | BM25 + Qdrant Search + RRF ($k=60$) | **~45ms** | Tốc độ đáp ứng thời gian thực (Real-time). |
+| **5. Cross-Encoder Reranking (Per Query)** | `BAAI/bge-reranker-v2-m3` | **~180ms** | Lọc Top 20 candidate $\rightarrow$ Top 4 context chính xác nhất. |
+| **6. Answer Generation (Per Query)** | `gpt-4o-mini` (temperature=0.0) | **~1.2s** | Sinh câu trả lời hoàn chỉnh, chuẩn xác theo ngữ cảnh. |
+| **7. RAGAS Benchmark Evaluation** | RAGAS Framework (80 evaluations) | **56.4s** (~2.8s / câu) | Đánh giá tự động 4 metrics trên toàn bộ 20 câu hỏi. |
+
+---
+
 ## Bottom-5 Failures (Phân tích các câu hỏi cần cải thiện thêm)
 
 Dưới đây là 5 câu hỏi có điểm số tương đối thấp nhất trích xuất từ báo cáo thực nghiệm [reports/ragas_report.json](file:///d:/AI%20th%E1%BB%B1c%20chi%E1%BA%BFn%20K4/K4-Track3B-Day18-ThanTienDat-2A202603023-Production-RAG/reports/ragas_report.json):
