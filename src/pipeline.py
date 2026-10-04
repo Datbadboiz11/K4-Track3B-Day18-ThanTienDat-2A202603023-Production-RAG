@@ -65,8 +65,9 @@ def run_query(query: str, search: HybridSearch, reranker: CrossEncoderReranker) 
     """Run single query through pipeline."""
     results = search.search(query)
     docs = [{"text": r.text, "score": r.score, "metadata": r.metadata} for r in results]
-    reranked = reranker.rerank(query, docs, top_k=RERANK_TOP_K)
-    contexts = [r.text for r in reranked] if reranked else [r.text for r in results[:3]]
+    top_k_rerank = max(RERANK_TOP_K, 4)
+    reranked = reranker.rerank(query, docs, top_k=top_k_rerank)
+    contexts = [r.text for r in reranked] if reranked else [r.text for r in results[:top_k_rerank]]
 
     from config import OPENAI_API_KEY
     if OPENAI_API_KEY and contexts:
@@ -74,10 +75,30 @@ def run_query(query: str, search: HybridSearch, reranker: CrossEncoderReranker) 
             from openai import OpenAI
             client = OpenAI()
             context_str = "\n\n".join(contexts)
-            resp = client.chat.completions.create(model="gpt-4o-mini", messages=[
-                {"role": "system", "content": "Trả lời CHỈ dựa trên context. Nếu không có → nói 'Không tìm thấy.'"},
-                {"role": "user", "content": f"Context:\n{context_str}\n\nCâu hỏi: {query}"},
-            ])
+            system_prompt = (
+                "Bạn là trợ lý AI chuyên nghiệp giải đáp các thắc mắc về chính sách và quy định nội bộ của tổ chức dựa TRÊN CÁC ĐOẠN TRÍCH (Context) ĐƯỢC CUNG CẤP.\n\n"
+                "CÁC NGUYÊN TẮC BẮT BUỘC:\n"
+                "1. TÍNH TRUNG THỰC (Faithfulness):\n"
+                "   - Trả lời CHỈ dựa trên dữ liệu có trong Context. Tuyệt đối không suy đoán hoặc bịa đặt thông tin không được đề cập.\n"
+                "2. XỬ LÝ XUNG ĐỘT PHIÊN BẢN (Version Conflict):\n"
+                "   - Nếu trong Context xuất hiện nhiều phiên bản chính sách khác nhau (ví dụ: v2023 và v2024, v1.0 và v2.0, cũ và mới), LUÔN LUÔN khẳng định câu trả lời theo chính sách HIỆN HÀNH / MỚI NHẤT (v2024, v2.0), đồng thời có thể ghi chú ngắn gọn chính sách cũ đã bị thay thế.\n"
+                "3. ĐỘ PHÙ HỢP CÂU TRẢ LỜI (Answer Relevancy):\n"
+                "   - Trả lời trực diện, đầy đủ câu với chủ thể rõ ràng, lặp lại các thực thể quan trọng trong câu hỏi để đảm bảo tính tường minh.\n"
+                "4. CÂU HỎI PHỦ ĐỊNH / ĐIỀU KIỆN (Negation):\n"
+                "   - Với câu hỏi có/không hoặc điều kiện loại trừ (nhân viên thử việc, nghỉ không lương, tự xử lý sự cố...), nếu quy định không cho phép, hãy nêu rõ 'KHÔNG' hoặc 'Không được phép' kèm lý do/điều kiện theo Context.\n"
+                "5. CÂU HỎI ĐA BƯỚC & TÍNH TOÁN (Multi-hop & Numeric):\n"
+                "   - Nếu câu hỏi có nhiều vế, hãy trả lời đầy đủ từng vế.\n"
+                "   - Nếu cần tính toán (như ngày phép thâm niên), hãy trình bày rõ phép tính: [ngày phép cơ bản] + [ngày phép thâm niên] = [tổng số ngày].\n"
+                "6. Nếu Context hoàn toàn không chứa thông tin để trả lời, trả lời: 'Không tìm thấy thông tin.'"
+            )
+            resp = client.chat.completions.create(
+                model="gpt-4o-mini",
+                temperature=0.0,
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": f"Context:\n{context_str}\n\nCâu hỏi: {query}"},
+                ],
+            )
             answer = resp.choices[0].message.content
         except Exception as e:
             print(f"  ⚠️  LLM generation failed: {e}", flush=True)

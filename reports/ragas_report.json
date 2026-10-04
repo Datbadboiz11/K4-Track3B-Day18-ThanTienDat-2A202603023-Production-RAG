@@ -1,91 +1,91 @@
 {
   "aggregate": {
-    "faithfulness": 0.7458333333333333,
-    "answer_relevancy": 0.6370088974758037,
-    "context_precision": 0.9458333332860416,
-    "context_recall": 0.85
+    "faithfulness": 0.8491666666666667,
+    "answer_relevancy": 0.8647258213491475,
+    "context_precision": 0.895833333293611,
+    "context_recall": 0.8833333333333332
   },
   "num_questions": 20,
   "failures": [
     {
-      "question": "Thâm niên bao nhiêu năm thì được cộng thêm ngày phép?",
-      "avg_score": 0.39583333332604165,
+      "question": "Nhân viên tạm ứng 15 triệu, sau 20 ngày mới thanh toán. Bị phạt bao nhiêu?",
+      "avg_score": 0.6394271055585183,
       "worst_metric": "faithfulness",
-      "score": 0.0,
+      "score": 0.4,
       "diagnosis": "LLM hallucinating",
       "suggested_fix": "Tighten prompt, lower temperature"
     },
     {
       "question": "Bao lâu phải đổi mật khẩu một lần?",
-      "avg_score": 0.45833333332291665,
+      "avg_score": 0.6676517337633716,
       "worst_metric": "faithfulness",
       "score": 0.0,
       "diagnosis": "LLM hallucinating",
       "suggested_fix": "Tighten prompt, lower temperature"
     },
     {
-      "question": "Nhân viên thử việc có được hưởng bảo hiểm sức khỏe PVI không?",
-      "avg_score": 0.49999999999166667,
-      "worst_metric": "faithfulness",
-      "score": 0.0,
-      "diagnosis": "LLM hallucinating",
-      "suggested_fix": "Tighten prompt, lower temperature"
+      "question": "Nghỉ phép không lương 20 ngày cần ai phê duyệt?",
+      "avg_score": 0.7302677948225844,
+      "worst_metric": "context_recall",
+      "score": 0.5,
+      "diagnosis": "Missing relevant chunks",
+      "suggested_fix": "Improve chunking or add BM25"
     },
     {
       "question": "Nếu cần mua một chiếc laptop 30 triệu cho nhân viên mới, ai phê duyệt và cần gì từ phòng CNTT?",
-      "avg_score": 0.49999999999166667,
-      "worst_metric": "answer_relevancy",
-      "score": 0.0,
-      "diagnosis": "Answer doesn't match question",
-      "suggested_fix": "Improve prompt template"
-    },
-    {
-      "question": "Một nhân viên Senior có 9 năm thâm niên được nghỉ bao nhiêu ngày phép năm và lương trong khoảng nào?",
-      "avg_score": 0.5624999999916667,
-      "worst_metric": "answer_relevancy",
-      "score": 0.0,
-      "diagnosis": "Answer doesn't match question",
-      "suggested_fix": "Improve prompt template"
+      "avg_score": 0.7672208300306707,
+      "worst_metric": "faithfulness",
+      "score": 0.5,
+      "diagnosis": "LLM hallucinating",
+      "suggested_fix": "Tighten prompt, lower temperature"
     },
     {
       "question": "Nhân viên được tài trợ khóa học 25 triệu, nghỉ việc sau 8 tháng hoàn thành khóa học. Phải hoàn trả bao nhiêu?",
-      "avg_score": 0.7814786686239261,
+      "avg_score": 0.7853786135606488,
       "worst_metric": "faithfulness",
       "score": 0.3333333333333333,
       "diagnosis": "LLM hallucinating",
       "suggested_fix": "Tighten prompt, lower temperature"
     },
     {
-      "question": "Nghỉ phép không lương 20 ngày cần ai phê duyệt?",
-      "avg_score": 0.8214959950797428,
+      "question": "Có cần kích hoạt xác thực đa yếu tố (MFA) không?",
+      "avg_score": 0.8536054944390119,
       "worst_metric": "context_recall",
       "score": 0.5,
       "diagnosis": "Missing relevant chunks",
       "suggested_fix": "Improve chunking or add BM25"
     },
     {
-      "question": "Nhân viên tạm ứng 15 triệu, sau 20 ngày mới thanh toán. Bị phạt bao nhiêu?",
-      "avg_score": 0.823877963579839,
-      "worst_metric": "faithfulness",
-      "score": 0.6666666666666666,
-      "diagnosis": "LLM hallucinating",
-      "suggested_fix": "Tighten prompt, lower temperature"
+      "question": "Một nhân viên Senior có 9 năm thâm niên được nghỉ bao nhiêu ngày phép năm và lương trong khoảng nào?",
+      "avg_score": 0.8572769472427516,
+      "worst_metric": "context_recall",
+      "score": 0.5,
+      "diagnosis": "Missing relevant chunks",
+      "suggested_fix": "Improve chunking or add BM25"
+    },
+    {
+      "question": "Muốn mua thiết bị trị giá 55 triệu cần ai phê duyệt?",
+      "avg_score": 0.8808314066828756,
+      "worst_metric": "context_precision",
+      "score": 0.5833333333041666,
+      "diagnosis": "Too many irrelevant chunks",
+      "suggested_fix": "Add reranking or metadata filter"
+    },
+    {
+      "question": "Thâm niên bao nhiêu năm thì được cộng thêm ngày phép?",
+      "avg_score": 0.8888557587945113,
+      "worst_metric": "context_precision",
+      "score": 0.6388888888675925,
+      "diagnosis": "Too many irrelevant chunks",
+      "suggested_fix": "Add reranking or metadata filter"
     },
     {
       "question": "Lương thử việc của nhân viên Junior mức cao nhất là bao nhiêu?",
-      "avg_score": 0.8310274389107011,
-      "worst_metric": "faithfulness",
-      "score": 0.5,
-      "diagnosis": "LLM hallucinating",
-      "suggested_fix": "Tighten prompt, lower temperature"
-    },
-    {
-      "question": "Thông tin lương thuộc cấp độ phân loại dữ liệu nào?",
-      "avg_score": 0.84275690343694,
-      "worst_metric": "context_recall",
-      "score": 0.5,
-      "diagnosis": "Missing relevant chunks",
-      "suggested_fix": "Improve chunking or add BM25"
+      "avg_score": 0.9143607722419511,
+      "worst_metric": "answer_relevancy",
+      "score": 0.8241097556761378,
+      "diagnosis": "Answer doesn't match question",
+      "suggested_fix": "Improve prompt template"
     }
   ]
 }
